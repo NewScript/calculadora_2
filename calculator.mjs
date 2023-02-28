@@ -50,18 +50,71 @@ const Value = {
 //--------------------------------------------------------
 
 function clear (){
-  Value.signal = '';
-  Value.integer = '';
-  Value.comma = '';
-  Value.decimal = '';
-  // presentNumber();
-  viewCalculation.numberPresentation.innerText = '0';
-  // values = []
+    Value.signal = '';
+    Value.integer = '';
+    Value.comma = '';
+    Value.decimal = '';
+    presentNumber();
+    viewCalculation.numberPresentation.innerText = '0';
 }
 
 function clearAll (){
-  clear();
-  viewCalculation.calculationFormulation.textContent = '0';
+    clear();
+    viewCalculation.calculationFormulation.textContent = '0';
+    globalVariables.values = []
+    globalVariables.operators = []
+}
+
+function presentFormulation (event){
+    if(viewCalculation.calculationFormulation.textContent === '0'){
+        viewCalculation.calculationFormulation.textContent = '';
+    }
+    viewCalculation.calculationFormulation.textContent += 
+        `${viewCalculation.numberPresentation.textContent} ${event.target.innerText} `
+}
+
+function addDotBackwards (string) {
+    let reversedString = string.split('').reverse().join(''); // inverte a string
+    let result = reversedString.replace(/(\d{1,3})/g, '$1.').split('').reverse().join(''); // adiciona um ponto a cada 3 dígitos
+    if (result.charAt(0) === '.') { // remove ponto adicional adicionado no início da string
+        result = result.slice(1);
+    }
+    return result;
+}
+
+function presentNumber () {
+    const valueTemp = addDotBackwards(Value.integer);
+    viewCalculation.numberPresentation.textContent = 
+        `${Value.signal}${valueTemp}${Value.comma}${Value.decimal}`;
+    // console.log(`${Value.signal}${Value.integer}${Value.comma}${Value.decimal}`)
+}
+
+function bsPresentNumber (){
+    let indexOfTheCharacterToBeDeleted = ((viewCalculation.numberPresentation.textContent).length - 1);
+    let letterToErase = viewCalculation.numberPresentation.textContent.charAt(indexOfTheCharacterToBeDeleted);
+    viewCalculation.numberPresentation.textContent = (viewCalculation.numberPresentation.textContent).slice(0, indexOfTheCharacterToBeDeleted);
+    if(indexOfTheCharacterToBeDeleted === 0){
+        viewCalculation.numberPresentation.textContent = '0';
+    }
+    if(letterToErase != ',' || letterToErase != '-' || letterToErase != '.'){
+        bsStoreNumber();
+    }
+    if(letterToErase === ','){
+        Value.comma = '';
+    }
+    if(letterToErase === '-'){
+        Value.signal = '';
+    }
+}
+
+function bsStoreNumber (){
+    if(Value.comma){
+        Value.decimal = Value.decimal.slice(0, Value.decimal.length - 1);
+        // console.log('Decimal = ' + $strDecimal + ' - ' + $strDecimal.length);
+    }else{
+        Value.integer = Value.integer.slice(0, Value.integer.length - 1);
+        // console.log('Integer = ' + $strInteger + ' - ' + $strInteger.length);
+    }
 }
 
 function maximumNumberOfCharactersAllowedReached () {
@@ -71,16 +124,16 @@ function maximumNumberOfCharactersAllowedReached () {
     return totalCaracters >= globalVariables.numberOfCharactersAllowed ? true : false;
 }
 
-function includeNumber (btnClicked) {
-    const numberClicked = btnClicked.target.innerHTML;
+function includeNumber (event) {
+    const numberClicked = event.target.innerHTML;
     // console.log(numberClicked)
     if (!maximumNumberOfCharactersAllowedReached()) {
         if (Value.comma === '') {
             Value.integer = Value.integer + numberClicked;
-            // presentNumber();
+            presentNumber();
         } else {
             Value.decimal = Value.decimal + numberClicked;
-            // presentNumber();
+            presentNumber();
         }
     } else {
         alert('Número máximo de caracteres permitidos alcançado');
@@ -95,6 +148,7 @@ function includeNumbers(){
 function includeOperator(event){
   const selectedOperator = event.target.id
   globalVariables.operators.push(selectedOperator)
+  presentFormulation(event)
   includeNumbers()
 }
 
@@ -110,17 +164,20 @@ function changeSign () {
       Value.signal = '-';
       break; 
   }
+  presentNumber();
 }
 
 function includeComma () {
     Value.comma = ',';
-    // presentNumber();
+    presentNumber();
 }
 
 // Ao clicar no sinal de igual deve-se incluir na 'expressão'
 // o último número digitado
-function calculateExpression(){
-  console.log(globalVariables.values, globalVariables.operators)
+function calculateExpression(event){
+    presentFormulation(event)
+    includeNumbers()
+    console.log(globalVariables.values, globalVariables.operators)
 }
 
 
@@ -154,7 +211,7 @@ action.clear.addEventListener('click', clear);
 
 action.allClear.addEventListener('click', clearAll);
 
-// action.backSpace.addEventListener('click', bsPresentNumber);
+action.backSpace.addEventListener('click', bsPresentNumber);
 
 operators.sum.addEventListener('click', includeOperator);
 
