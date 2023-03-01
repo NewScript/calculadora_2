@@ -172,30 +172,12 @@ function includeComma () {
     presentNumber();
 }
 
-// Ao clicar no sinal de igual deve-se incluir na 'expressão'
-// o último número digitado
 function calculateExpression(event){
     presentFormulation(event)
     includeNumbers()
     console.log(globalVariables.values, globalVariables.operators)
 }
 
-
-//--------------------------------------------------------
-
-// Value.integer = '4566'
-// Value.comma = ','
-// Value.decimal = '5323'
-
-// globalVariables.values.push(Value.toNumber())
-
-// Value.integer = '4566'
-// Value.comma = ''
-// Value.decimal = ''
-
-// globalVariables.values.push(Value.toNumber())
-
-// console.log(globalVariables.values)
 
 //--------------------------------------------------------
 
