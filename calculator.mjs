@@ -34,7 +34,8 @@ const globalVariables = {
     numberOfCharactersAllowed: 10,
     formattedNumbers: '',
     values: [],
-    operators: []    
+    operators: [],
+    result: ''  
 }
 
 const Value = {
@@ -175,7 +176,44 @@ function includeComma () {
 function calculateExpression(event){
     presentFormulation(event)
     includeNumbers()
-    console.log(globalVariables.values, globalVariables.operators)
+    // console.log(globalVariables.values, globalVariables.operators)
+    calculate()
+}
+
+function calculate(){
+    const temporaryValues = globalVariables.values.map(element => {
+        return element.replace(',','.')
+    })
+
+    const resultIndex = []
+    globalVariables.operators.forEach((element, index) => {
+        if(element === 'multiplication' || element === 'division'){
+            resultIndex.push(index)
+        }
+    })
+
+    console.log(temporaryValues, resultIndex)
+    
+    for(let i = 0; i < resultIndex.length; i++){
+        console.log(globalVariables.operators[resultIndex[i]])
+    }
+
+    for(let i = 0; i < resultIndex.length; i++){
+        console.log(`operations[${globalVariables.operators[resultIndex[i]]}]`)
+        console.log(`Parâmetros: (${temporaryValues[resultIndex[i]]}, ${temporaryValues[resultIndex[i]+1]})`)
+    }
+
+    console.log('-----')
+    let temp = []
+    for(let i = 0; i < resultIndex.length; i++){
+        
+        let parametros = []
+        let operation = globalVariables.operators[resultIndex[i]]
+        parametros = (`${temporaryValues[resultIndex[i]]}, ${temporaryValues[resultIndex[i]+1]}`).split(',')
+        temp.push(operations[operation](parametros))
+    }
+    globalVariables.result = temp
+    console.log(globalVariables.result)
 }
 
 
