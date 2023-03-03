@@ -192,6 +192,8 @@ function calculate(){
         }
     })
 
+    console.log('-----')
+
     console.log(temporaryValues, resultIndex)
     
     for(let i = 0; i < resultIndex.length; i++){
@@ -204,6 +206,7 @@ function calculate(){
     }
 
     console.log('-----')
+
     let temp = []
     for(let i = 0; i < resultIndex.length; i++){
         
@@ -215,7 +218,6 @@ function calculate(){
     globalVariables.result = temp
     console.log(globalVariables.result)
 }
-
 
 //--------------------------------------------------------
 
