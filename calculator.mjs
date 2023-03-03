@@ -35,7 +35,7 @@ const globalVariables = {
     formattedNumbers: '',
     values: [],
     operators: [],
-    result: ''  
+    result: [] 
 }
 
 const Value = {
@@ -185,38 +185,54 @@ function calculate(){
         return element.replace(',','.')
     })
 
-    const resultIndex = []
+    const capturingIndexesPreviousOperations = []
     globalVariables.operators.forEach((element, index) => {
         if(element === 'multiplication' || element === 'division'){
-            resultIndex.push(index)
+            capturingIndexesPreviousOperations.push(index)
         }
     })
 
     console.log('-----')
 
-    console.log(temporaryValues, resultIndex)
+    console.log(temporaryValues, capturingIndexesPreviousOperations)
     
-    for(let i = 0; i < resultIndex.length; i++){
-        console.log(globalVariables.operators[resultIndex[i]])
+    for(let i = 0; i < capturingIndexesPreviousOperations.length; i++){
+        console.log(globalVariables.operators[capturingIndexesPreviousOperations[i]])
     }
 
-    for(let i = 0; i < resultIndex.length; i++){
-        console.log(`operations[${globalVariables.operators[resultIndex[i]]}]`)
-        console.log(`Parâmetros: (${temporaryValues[resultIndex[i]]}, ${temporaryValues[resultIndex[i]+1]})`)
+    for(let i = 0; i < capturingIndexesPreviousOperations.length; i++){
+        console.log(`operations[${globalVariables.operators[capturingIndexesPreviousOperations[i]]}]`)
+        console.log(`Parâmetros: (${temporaryValues[capturingIndexesPreviousOperations[i]]}, ${temporaryValues[capturingIndexesPreviousOperations[i]+1]})`)
     }
 
     console.log('-----')
 
-    let temp = []
-    for(let i = 0; i < resultIndex.length; i++){
-        
+    console.log(temporaryValues)
+    
+    for(let i = 0; i < capturingIndexesPreviousOperations.length; i++){
         let parametros = []
-        let operation = globalVariables.operators[resultIndex[i]]
-        parametros = (`${temporaryValues[resultIndex[i]]}, ${temporaryValues[resultIndex[i]+1]}`).split(',')
-        temp.push(operations[operation](parametros))
+        let operation = globalVariables.operators[capturingIndexesPreviousOperations[i]]
+        parametros = (`${temporaryValues[capturingIndexesPreviousOperations[i]]},
+                        ${temporaryValues[capturingIndexesPreviousOperations[i]+1]}`)
+                        .split(',')
+        globalVariables.result.push(operations[operation](parametros))
     }
-    globalVariables.result = temp
+
+    for(let i = 0; i < capturingIndexesPreviousOperations.length; i++){
+        if(i === 0){
+            temporaryValues.splice(capturingIndexesPreviousOperations[i],2)
+            continue
+        }
+        temporaryValues.splice(capturingIndexesPreviousOperations[i] - 2,2)
+    }
+
+    
+
+       
+    console.log(temporaryValues)
+
     console.log(globalVariables.result)
+
 }
 
 //--------------------------------------------------------
