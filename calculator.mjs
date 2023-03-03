@@ -223,10 +223,10 @@ function calculate(){
             temporaryValues.splice(capturingIndexesPreviousOperations[i],2)
             continue
         }
-        temporaryValues.splice(capturingIndexesPreviousOperations[i] - 2,2)
+        temporaryValues.splice(capturingIndexesPreviousOperations[i] - (i * 2), 2)
     }
 
-    
+
 
        
     console.log(temporaryValues)
